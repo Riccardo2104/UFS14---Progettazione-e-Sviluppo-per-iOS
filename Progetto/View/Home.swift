@@ -60,7 +60,6 @@ struct HomeView: View {
                 }
                 .padding()
             }
-            .background(Color.purple.opacity(0.2))
             .navigationTitle("FrigoNutrient")
             .sheet(isPresented: $mostraCreaLista) {
                 Text("Crea lista") // TODO
