@@ -30,3 +30,4 @@ struct ProgettoApp: App {
         .modelContainer(sharedModelContainer)
     }
 }
+
