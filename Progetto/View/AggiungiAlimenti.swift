@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AggiungiAlimentiView: View {
+struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var nomeAlimento: String = ""
@@ -122,6 +122,6 @@ extension String {
 }
 #Preview {
     NavigationStack {
-        AggiungiAlimentiView()
+        AggiungiAlimenti()
     }
 }

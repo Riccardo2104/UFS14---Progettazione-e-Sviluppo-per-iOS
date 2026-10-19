@@ -6,8 +6,8 @@
 //
 
 import Foundation
-@Model
-final class Lista { //Evitare eredità altre classi
+
+ class Lista { //Evitare eredità altre classi
     var ID = UUID()
     var nome: String
     var temperatura: String
@@ -15,8 +15,15 @@ final class Lista { //Evitare eredità altre classi
     
 
 
-    init(barcode: String, nome: String) {
-        self.barcode = barcode
-        self.nome = nome
-    }
+     init(
+        ID: UUID = UUID(),
+        nome: String,
+        temperatura: String,
+        alimenti: Alimento
+     ) {
+         self.ID = ID
+         self.nome = nome
+         self.temperatura = temperatura
+         self.alimenti = alimenti
+     }
 }

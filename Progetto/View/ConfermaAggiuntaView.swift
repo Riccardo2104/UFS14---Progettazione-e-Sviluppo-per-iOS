@@ -137,6 +137,6 @@ struct ConfermaAggiuntaView: View {
 
 #Preview {
     NavigationStack {
-        AggiungiAlimentiView()
+        AggiungiAlimenti()
     }
 }

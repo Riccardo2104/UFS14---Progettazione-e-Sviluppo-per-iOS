@@ -30,15 +30,21 @@ struct PulsanteCerchio: View {
 struct CreazioneLista: View {
     @State private var nomeLista = ""
     @State private var scelta: Temperatura? = nil
-    
+    @Environment(\.dismiss) private var dismiss // variabile di contesto che usiamo per chiudere la pagina all'interno della vista
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Button(action: {}) {
+                Button {
+                    dismiss()
+                } label: {
                     Image(systemName: "arrow.left")
                 }
+                
                 Text("Creazione Lista")
+                
                 Spacer()
+                
             }
             .padding()
             .foregroundColor(.white)

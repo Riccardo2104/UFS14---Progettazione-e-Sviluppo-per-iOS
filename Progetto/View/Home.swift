@@ -53,6 +53,7 @@ struct HomeView: View {
                 HStack(spacing: 12) {
                     PulsanteViola(titolo: "Crea lista Custom") {
                         mostraCreaLista = true
+                       
                     }
                     PulsanteViola(titolo: "Aggiungi alimenti") {
                         mostraAggiungi = true
@@ -62,10 +63,12 @@ struct HomeView: View {
             }
             .navigationTitle("FrigoNutrient")
             .sheet(isPresented: $mostraCreaLista) {
-                Text("Crea lista") // TODO
+                CreazioneLista()
+                
+                
             }
             .sheet(isPresented: $mostraAggiungi) {
-                Text("Aggiungi alimenti") // TODO
+                AggiungiAlimenti()
             }
         }
     }
@@ -150,7 +153,7 @@ struct CardAlimento: View {
                 .lineLimit(1)
             
             HStack {
-                NavigationLink(destination: Text(alimento.nome)) {
+                NavigationLink(destination: ValoriNutrizionali()) {
                     Image(systemName: "info.circle")
                         .font(.title2)
                 }
