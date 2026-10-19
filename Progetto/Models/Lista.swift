@@ -6,3 +6,17 @@
 //
 
 import Foundation
+@Model
+final class Lista { //Evitare eredità altre classi
+    var ID = UUID()
+    var nome: String
+    var temperatura: String
+    var alimenti: Alimento
+    
+
+
+    init(barcode: String, nome: String) {
+        self.barcode = barcode
+        self.nome = nome
+    }
+}

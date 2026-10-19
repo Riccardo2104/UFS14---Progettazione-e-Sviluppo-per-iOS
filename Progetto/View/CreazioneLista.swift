@@ -6,20 +6,6 @@
 //
 import SwiftUI
 
-enum Temperatura: Int, CaseIterable {
-    case ambiente = 1
-    case fresco = 2
-    case congelato = 3
-
-    var icona: String {
-        switch self {
-        case .ambiente: return "house"
-        case .fresco:   return "refrigerator"
-        case .congelato:    return "snowflake"
-        }
-    }
-}
-
 struct PulsanteCerchio: View {
     let icona: String
     @Binding var attivo: Bool
