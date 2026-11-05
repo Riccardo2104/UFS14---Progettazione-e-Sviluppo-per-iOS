@@ -10,7 +10,6 @@ struct AggiungiAlimenti: View {
     ]
     
     @State private var mostraConferma: Bool = false
-
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -79,11 +78,12 @@ struct AggiungiAlimenti: View {
                 }
                 .padding()
             }
-            NavigationStack {
+       
+          
+
                 Button(action: {
-                    mostraConferma = true
                     salvaElemento()
-                    
+                    mostraConferma = true
                 }) {
                     Text("Aggiungi Elemento")
                         .font(.headline)
@@ -96,27 +96,15 @@ struct AggiungiAlimenti: View {
                         .padding(.horizontal, 24)
                         .padding(.bottom, 20)
                 }
-            }.navigationDestination(isPresented: $mostraConferma){
-                ConfermoAlimento()
-            }
+            
             
             .disabled(barcode.trimmed.isEmpty)
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $mostraConferma) {
-            ConfermaAggiuntaView(
-                nomeAlimento: barcode,
-                opzioniLista: opzioniLista,
-                onContinuare: {
-                    salvaElemento()
-                    resetForm()
-                },
-                onNo: {
-                    salvaElemento()
-                    dismiss()
-                }
-            )
+            ConfermoAlimento()
         }
+      
     }
     
     private func salvaElemento() {
