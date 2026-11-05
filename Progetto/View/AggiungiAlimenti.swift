@@ -4,6 +4,7 @@ struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var barcode: String = ""
+    @State private var dataScadenza: Date = Date()
     @State private var opzioniLista: [ElementoLista] = [
         ElementoLista(nome: "Lista 1", selezionato: true),
         ElementoLista(nome: "Lista 2", selezionato: false)
@@ -65,24 +66,41 @@ struct AggiungiAlimenti: View {
                             }
                         }
                     }
+                    
+                    HStack {
+                        Text("Data Scadenza:")
+                            .font(.title3)
+                            .bold()
+                        
+                        Spacer()
+        
+                        DatePicker("", selection: $dataScadenza, displayedComponents: .date)
+                            .labelsHidden()
+                    }
                 }
                 .padding()
             }
-            
-            Button(action: {
-                mostraConferma = true
-            }) {
-                Text("Aggiungi Elemento")
-                    .font(.headline)
-                    .bold()
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
-                    .cornerRadius(12)
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 20)
+            NavigationStack {
+                Button(action: {
+                    mostraConferma = true
+                    salvaElemento()
+                    
+                }) {
+                    Text("Aggiungi Elemento")
+                        .font(.headline)
+                        .bold()
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
+                        .cornerRadius(12)
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 20)
+                }
+            }.navigationDestination(isPresented: $mostraConferma){
+                ConfermoAlimento()
             }
+            
             .disabled(barcode.trimmed.isEmpty)
         }
         .navigationBarBackButtonHidden(true)

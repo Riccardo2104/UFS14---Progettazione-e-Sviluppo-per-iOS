@@ -78,7 +78,10 @@ struct CreazioneLista: View {
                         }
                     }
                     HStack(alignment: VerticalAlignment.bottom, spacing:100) {
-                        Button (action:{}){ //Da implementare
+                        Button (action:{
+                            salvaElemento()
+                            dismiss()
+                        }){ //Da implementare
                             Text("Salva")
                                 .foregroundColor(.white)
                                 .font(.headline)
@@ -94,6 +97,11 @@ struct CreazioneLista: View {
             }
         }
     }
+}
+
+private func salvaElemento() {
+    print("Salvataggio nel DB: ")
+    
 }
 #Preview {
     CreazioneLista()

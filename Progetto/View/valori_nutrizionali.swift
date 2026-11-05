@@ -13,7 +13,7 @@ struct ValoriNutrizionali: View {
     @State private var grassi: String = ""
     @State private var proteine: String = ""
     @State private var fibre: String = ""
-    @State private var dataScadenza: Date = Date()
+    
     
     var body: some View {
         VStack(spacing: 0) {
@@ -51,23 +51,19 @@ struct ValoriNutrizionali: View {
                             Text("Valori nutrizionali")
                                 .font(.title2)
                                 .bold()
-                            
-                            TextField("100", text: $quantita)
-                                .padding(10)
-                                .frame(width: 180)
-                                .background(Color(uiColor: .systemGray5))
-                                .cornerRadius(4)
+                            HStack {
+                                TextField("100", text: $quantita)
+                                    .padding(10)
+                                    .frame(width: 180)
+                                    .background(Color(uiColor: .systemGray5))
+                                    .cornerRadius(4)
+                                Text("g")
+                                    .font(.caption)
+                            }
                         }
                         
                         Spacer()
                         
-                        Button(action: {
-                           
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 36, weight: .light))
-                                .foregroundColor(.black)
-                        }
                     }
                     .padding(.top, 10)
                     
@@ -79,6 +75,7 @@ struct ValoriNutrizionali: View {
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
+                            Text("g").font(.caption)
                         }
                         
                         HStack {
@@ -88,6 +85,7 @@ struct ValoriNutrizionali: View {
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
+                            Text("g").font(.caption)
                         }
                         
                         HStack {
@@ -97,45 +95,14 @@ struct ValoriNutrizionali: View {
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray3).opacity(0.2)) // Solo etichetta o campo vuoto
                                 .cornerRadius(4)
+                            Text("g").font(.caption)
                         }
                     }
                     
                     // Data di Scadenza
-                    HStack {
-                        Text("Data Scadenza:")
-                            .font(.title3)
-                            .bold()
-                        
-                        Spacer()
-        
-                        DatePicker("", selection: $dataScadenza, displayedComponents: .date)
-                            .labelsHidden()
-                    }
                     
-                    VStack(spacing: 12) {
-                        Image("orco_cervello")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 120)
-                            .cornerRadius(4)
-                        
-                        Text("Nome")
-                            .font(.headline)
-                            .bold()
-                        
-                        HStack {
-                            Image(systemName: "info.circle")
-                            Spacer()
-                            Image(systemName: "info.circle")
-                        }
-                        .font(.title3)
-                        .padding(.horizontal, 10)
-                    }
-                    .padding()
-                    .frame(width: 160)
-                    .background(Color(uiColor: .systemGray4))
-                    .cornerRadius(4)
-
+                    
+                    
                 }
                 .padding()
             }

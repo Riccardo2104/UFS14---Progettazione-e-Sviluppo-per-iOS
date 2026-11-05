@@ -12,15 +12,14 @@ import SwiftData
     var id = UUID()
     var nome: String
     var temperatura: Temperatura
-    var alimenti: Alimento
-    
-
+     @Relationship(deleteRule: .cascade, inverse: \Alimento.lista)
+     var alimenti: [Alimento] = []
 
      init(
         ID: UUID = UUID(),
         nome: String,
         temperatura: Temperatura,
-        alimenti: Alimento
+        alimenti: [Alimento]
      ) {
          self.id = ID
          self.nome = nome
