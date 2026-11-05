@@ -2,7 +2,6 @@ import SwiftUI
 
 struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
-    
     @State private var barcode: String = ""
     @State private var opzioniLista: [ElementoLista] = [
         ElementoLista(nome: "Lista 1", selezionato: true),
