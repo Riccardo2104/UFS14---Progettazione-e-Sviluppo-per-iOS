@@ -12,7 +12,8 @@ import SwiftData
 struct ProgettoApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Lista.self,
+            Alimento.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

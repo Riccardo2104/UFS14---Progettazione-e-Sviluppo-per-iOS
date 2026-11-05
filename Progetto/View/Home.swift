@@ -70,6 +70,7 @@ struct HomeView: View {
             .sheet(isPresented: $mostraAggiungi) {
                 AggiungiAlimenti()
             }
+            
         }
     }
     
