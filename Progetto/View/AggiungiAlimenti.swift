@@ -3,7 +3,7 @@ import SwiftUI
 struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
     
-    @State private var nomeAlimento: String = ""
+    @State private var barcode: String = ""
     @State private var opzioniLista: [ElementoLista] = [
         ElementoLista(nome: "Lista 1", selezionato: true),
         ElementoLista(nome: "Lista 2", selezionato: false)
@@ -20,7 +20,7 @@ struct AggiungiAlimenti: View {
                         .foregroundColor(.white)
                 }
                 Spacer()
-                Text("Aggiungi alimenti")
+                Text("Aggiungi Barcode")
                     .font(.title2)
                     .bold()
                     .foregroundColor(.white)
@@ -40,7 +40,7 @@ struct AggiungiAlimenti: View {
                             .font(.title3)
                             .bold()
 
-                        TextField("Es. Mela", text: $nomeAlimento)
+                        TextField("Es. Mela", text: $barcode)
                             .padding(12)
                             .background(Color .purple)
                             .cornerRadius(8)
@@ -78,17 +78,17 @@ struct AggiungiAlimenti: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .background(nomeAlimento.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
+                    .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
                     .cornerRadius(12)
                     .padding(.horizontal, 24)
                     .padding(.bottom, 20)
             }
-            .disabled(nomeAlimento.trimmed.isEmpty)
+            .disabled(barcode.trimmed.isEmpty)
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $mostraConferma) {
             ConfermaAggiuntaView(
-                nomeAlimento: nomeAlimento,
+                nomeAlimento: barcode,
                 opzioniLista: opzioniLista,
                 onContinuare: {
                     salvaElemento()
@@ -103,12 +103,12 @@ struct AggiungiAlimenti: View {
     }
     
     private func salvaElemento() {
-        print("Salvataggio nel DB: \(nomeAlimento)")
+        print("Salvataggio nel DB: \(barcode)")
         
     }
     
     private func resetForm() {
-        nomeAlimento = ""
+        barcode = ""
         for i in opzioniLista.indices {
             opzioniLista[i].selezionato = false
         }

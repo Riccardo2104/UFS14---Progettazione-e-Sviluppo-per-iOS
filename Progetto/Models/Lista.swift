@@ -6,11 +6,12 @@
 //
 
 import Foundation
-
+import SwiftData
+@Model
  class Lista { //Evitare eredità altre classi
     var ID = UUID()
     var nome: String
-    var temperatura: String
+    var temperatura: Temperatura
     var alimenti: Alimento
     
 
@@ -18,7 +19,7 @@ import Foundation
      init(
         ID: UUID = UUID(),
         nome: String,
-        temperatura: String,
+        temperatura: Temperatura,
         alimenti: Alimento
      ) {
          self.ID = ID

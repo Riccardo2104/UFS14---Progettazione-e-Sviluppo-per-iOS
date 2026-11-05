@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftData
+@Model
 class Alimento {
     var barcode: String
     var nome: String
