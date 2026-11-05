@@ -6,7 +6,7 @@
 //
 
 import Foundation
-enum Temperatura: Int, CaseIterable {
+enum Temperatura: Int, CaseIterable, Codable {
     case ambiente = 1
     case fresco = 2
     case congelato = 3
