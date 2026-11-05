@@ -42,18 +42,20 @@ struct ConfermoAlimento: View {
                 Text("Si")
                     .font(.title2)
                     .foregroundColor(.white)
-                    .padding()
                     .frame(width: 100, height: 50)
                     .background(Color.purple)
+                    .cornerRadius(12)
             }
             Button(action: { dismiss() }) {
-                Text("Si")
+                Text("No")
                     .font(.title2)
                     .foregroundColor(.white)
-                    .padding()
                     .frame(width: 100, height: 50)
                     .background(Color.purple)
+                    .cornerRadius(12)
+                    .padding(.leading, 20)
             }
+            Spacer()
         }
         
     }
