@@ -8,12 +8,15 @@
 import Foundation
 
 struct ProductResponse: Codable {
-    let product: Product
+    let product: Product?
+    let code: String
+    let status: String
 }
 
 struct Product: Codable {
     let productName: String?
     let imageFrontSmallUrl: String?
+    // questi sono i grammi a porzione
     let servingQuantity: Double?
     let nutriments: Nutriments?
 
@@ -37,7 +40,16 @@ struct Nutriments: Codable {
     
     private let fiber100g: Double?
     private let fiberPrepared100g: Double?
-
+    init(calories: Double?, fat: Double?, proteins: Double?, fiber: Double?) {
+        energyKcal100g = calories
+        fat100g = fat
+        proteins100g = proteins
+        fiber100g = fiber
+        energyKcalPrepared100g = nil
+        fatPrepared100g = nil
+        proteinsPrepared100g = nil
+        fiberPrepared100g = nil
+    }
     enum CodingKeys: String, CodingKey {
         case energyKcal100g = "energy-kcal_100g"
         case energyKcalPrepared100g = "energy-kcal_prepared_100g"
@@ -48,20 +60,11 @@ struct Nutriments: Codable {
         case fiber100g = "fiber_100g"
         case fiberPrepared100g = "fiber_prepared_100g"
     }
-
-    var kcal: Double {
-        energyKcalPrepared100g ?? energyKcal100g ?? 0.0
-    }
-    
-    var grassi: Double {
-        fatPrepared100g ?? fat100g ?? 0.0
-    }
-    
-    var proteine: Double {
-        proteinsPrepared100g ?? proteins100g ?? 0.0
-    }
-    
-    var fibre: Double {
-        fiberPrepared100g ?? fiber100g ?? 0.0
-    }
+    // teniamo in inglese per facilità con i campi del json
+    // ho tolto gli zeri perchè potrebbe essere missleading
+    var calories: Double? { energyKcalPrepared100g ?? energyKcal100g }
+    var fat: Double?      { fatPrepared100g ?? fat100g }
+    var proteins: Double? { proteinsPrepared100g ?? proteins100g }
+    // ho tolto gli zer
+    var fiber: Double?    { fiberPrepared100g ?? fiber100g }
 }
