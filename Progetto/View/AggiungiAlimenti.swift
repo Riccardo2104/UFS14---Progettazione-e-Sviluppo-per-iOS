@@ -10,6 +10,7 @@ struct AggiungiAlimenti: View {
     ]
     
     @State private var mostraConferma: Bool = false
+    @StateObject private var api = ApiProdotto();
     var body: some View {
         VStack(spacing: 0) {
             HStack {
