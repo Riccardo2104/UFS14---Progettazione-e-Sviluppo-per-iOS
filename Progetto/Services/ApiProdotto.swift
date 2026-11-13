@@ -15,7 +15,7 @@ class ApiProdotto: ObservableObject, ServizioProdotto {
     }
     
     // per ora usiamo lo staging, alla consegna va messo world.openfoodfacts.org
-    private let urlServizio = "https://world.openfoodfacts.net/api/v3/product/"
+    private let urlServizio = "https://world.openfoodfacts.org/api/v3/product/"
     private let campi = "product_name,image_front_small_url,nutriments,serving_quantity"
     
     func caricaProdotto(barcode: String, completion: @escaping (Product?) -> Void) {
@@ -27,11 +27,8 @@ class ApiProdotto: ObservableObject, ServizioProdotto {
         
         var richiesta = URLRequest(url: url)
         // Open Food Facts vuole sapere chi fa le richieste
-        richiesta.setValue("FrigoNutrient/1.0 (email-del-team@esempio.it)", forHTTPHeaderField: "User-Agent")
-        // login dello staging (off/off), da togliere quando passiamo alla produzione
-        let credenziali = Data("off:off".utf8).base64EncodedString()
-        richiesta.setValue("Basic \(credenziali)", forHTTPHeaderField: "Authorization")
-        
+        richiesta.setValue("FrigoNutrient/1.0 riccardovigano21@gmail.com", forHTTPHeaderField: "User-Agent")
+            
         URLSession.shared.dataTask(with: richiesta) { data, response, error in
             var trovato: Product? = nil
             
