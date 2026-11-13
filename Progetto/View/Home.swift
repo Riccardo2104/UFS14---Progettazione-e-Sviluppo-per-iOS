@@ -187,6 +187,8 @@ struct HomeView: View {
         let onElimina: () -> Void
         
         @State private var selezionato = false
+        // true quando si preme il cestino: apre il dialogo di conferma
+        @State private var mostraConfermaElimina = false
         
         var body: some View {
             VStack(spacing: 8) {
@@ -212,7 +214,9 @@ struct HomeView: View {
                             .font(.title2)
                     }
                     Spacer()
-                    Button(action: onElimina) {
+                    Button {
+                        mostraConfermaElimina = true
+                    } label: {
                         Image(systemName: "trash")
                             .font(.title2)
                     }
@@ -224,30 +228,22 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
             .background(Color(.systemGray5))
             .cornerRadius(8)
-        }
-    }
-    
-    struct PulsanteViola: View {
-        let titolo: String
-        let azione: () -> Void
-        
-        var body: some View {
-            Button(action: azione) {
-                Text(titolo)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.purple)
-                    .cornerRadius(12)
+            // stesso stile del dialogo per eliminare le liste
+            .confirmationDialog(
+                "Eliminare \(alimento.nome)?",
+                isPresented: $mostraConfermaElimina,
+                titleVisibility: .visible
+            ) {
+                Button("Elimina", role: .destructive) {
+                    withAnimation {
+                        onElimina()
+                    }
+                }
+                Button("Annulla", role: .cancel) { }
+            } message: {
+                Text("Questa azione non può essere annullata.")
             }
         }
-        .buttonStyle(.plain)
-        .foregroundColor(.primary)
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color(.systemGray5))
-        .cornerRadius(8)
     }
 }
 
