@@ -38,8 +38,7 @@ struct ConfermoAlimento: View {
             }
             .padding()
             .frame(height: 60)
-            .background(Color.purple)
-            
+            .background(Color.purple.ignoresSafeArea(edges: .top))
             Spacer()
             
             if api.staCaricando {
@@ -92,6 +91,7 @@ struct ConfermoAlimento: View {
                 }
                 .padding()
                 
+
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
@@ -116,6 +116,7 @@ struct ConfermoAlimento: View {
             Spacer()
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar) 
     }
     
     // trasforma la risposta dell'API in un Alimento e lo salva nel database

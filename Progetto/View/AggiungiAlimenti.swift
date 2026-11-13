@@ -5,6 +5,7 @@ struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
     @State private var barcode: String = ""
     @State private var dataScadenza: Date = Date()
+    @State private var mostraSnackbar = false
     // le liste vere salvate nel database, e quella scelta dall'utente
     @Query(sort: \Lista.nome) private var liste: [Lista]
     @State private var listaScelta: Lista?
@@ -105,6 +106,8 @@ struct AggiungiAlimenti: View {
             .disabled(barcode.trimmed.isEmpty || listaScelta == nil)
         }
         .navigationBarBackButtonHidden(true)
+        .snackbar("Prodotto aggiunto", isPresented: $mostraSnackbar)
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             // di default la prima lista, così l'utente non deve sceglierla ogni volta
             if listaScelta == nil {
@@ -119,6 +122,7 @@ struct AggiungiAlimenti: View {
                 lista: listaScelta,
                 onSalvato: {
                     resetForm()
+                    mostraSnackbar = true
                 }
             )
         }

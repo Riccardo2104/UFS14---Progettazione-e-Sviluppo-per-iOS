@@ -7,7 +7,7 @@ struct HomeView: View {
 
     @State private var mostraCreaLista = false
     @State private var mostraAggiungi = false
-
+    @State private var mostraSnackbar = false
     // modalità eliminazione liste (pulsante "Elimina liste" / "Fatto")
     @State private var modalitaElimina = false
     // lista in attesa di conferma per l'eliminazione
@@ -73,10 +73,11 @@ struct HomeView: View {
                 }
                 .padding()
             }
-            .sheet(isPresented: $mostraCreaLista) {
-                CreazioneLista()
+            .fullScreenCover(isPresented: $mostraCreaLista) {
+                CreazioneLista(onSalvata: { mostraSnackbar = true })
             }
-            .sheet(isPresented: $mostraAggiungi) {
+            .snackbar("Lista creata", isPresented: $mostraSnackbar, distanzaDalBasso: 90)
+            .fullScreenCover(isPresented: $mostraAggiungi) {
                 NavigationStack {
                     AggiungiAlimenti()
                 }
@@ -220,7 +221,7 @@ struct CardAlimento: View {
 struct PulsanteViola: View {
     let titolo: String
     let azione: () -> Void
-
+    
     var body: some View {
         Button(action: azione) {
             Text(titolo)
@@ -233,7 +234,6 @@ struct PulsanteViola: View {
         }
     }
 }
-
 #Preview {
     ContentView()
         .modelContainer(for: [Lista.self, Alimento.self], inMemory: true)
