@@ -45,9 +45,11 @@ struct AggiungiAlimenti: View {
                         TextField("Es. 8012666041459", text: $barcode)
                             .keyboardType(.numberPad)
                             .padding(12)
-                            .background(Color.purple)
-                            .cornerRadius(8)
-                            .foregroundColor(.white) // sistemare il fatto che il placeholder è scuro
+                            .border(Color.purple).clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.purple, lineWidth: 2)
+                            )
                     }
                     
                     VStack(alignment: .leading, spacing: 12) {

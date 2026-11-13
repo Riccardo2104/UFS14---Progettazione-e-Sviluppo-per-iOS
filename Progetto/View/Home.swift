@@ -241,29 +241,11 @@ struct HomeView: View {
                     .background(Color.purple)
                     .cornerRadius(12)
             }
-        }
-        .buttonStyle(.plain)
-        .foregroundColor(.primary)
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color(.systemGray5))
-        .cornerRadius(8)
-    }
-}
-
-struct PulsanteViola: View {
-    let titolo: String
-    let azione: () -> Void
-    
-    var body: some View {
-        Button(action: azione) {
-            Text(titolo)
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.purple)
-                .cornerRadius(12)
+            .buttonStyle(.plain)
+            .foregroundColor(.primary)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .cornerRadius(8)
         }
     }
 }
