@@ -1,23 +1,16 @@
 import SwiftUI
-import SwiftData
-
 
 struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-
-
     @State private var barcode: String = ""
     @State private var dataScadenza: Date = Date()
     @State private var opzioniLista: [ElementoLista] = [
         ElementoLista(nome: "Lista 1", selezionato: true),
         ElementoLista(nome: "Lista 2", selezionato: false)
     ]
-
-
+    
     @State private var mostraConferma: Bool = false
-
-
+    @StateObject private var api = ApiProdotto();
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -39,8 +32,7 @@ struct AggiungiAlimenti: View {
             .padding()
             .frame(height: 60)
             .background(Color.purple)
-
-
+        
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
@@ -48,21 +40,18 @@ struct AggiungiAlimenti: View {
                             .font(.title3)
                             .bold()
 
-
                         TextField("Es. Mela", text: $barcode)
                             .padding(12)
-                            .background(Color.purple)
+                            .background(Color .purple)
                             .cornerRadius(8)
-                            .foregroundColor(.white) // sistemare il fatto che il placeholder è scuro
+                            .foregroundColor(.white) //sistemare il fatto che il placeholder text è scuro
                     }
-
-
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Lista:")
                             .font(.title3)
                             .bold()
-
-
+                        
                         ForEach($opzioniLista) { $elemento in
                             Button(action: {
                                 elemento.selezionato.toggle()
@@ -76,93 +65,69 @@ struct AggiungiAlimenti: View {
                             }
                         }
                     }
-
-
+                    
                     HStack {
                         Text("Data Scadenza:")
                             .font(.title3)
                             .bold()
-
-
+                        
                         Spacer()
-
-
+        
                         DatePicker("", selection: $dataScadenza, displayedComponents: .date)
                             .labelsHidden()
                     }
                 }
                 .padding()
             }
+       
+          
 
-
-            // qui apriamo solo la conferma, il salvataggio lo fa la pagina di conferma
-            Button(action: {
-                mostraConferma = true
-            }) {
-                Text("Aggiungi Elemento")
-                    .font(.headline)
-                    .bold()
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
-                    .cornerRadius(12)
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 20)
-            }
+                Button(action: {
+                    salvaElemento()
+                    mostraConferma = true
+                }) {
+                    Text("Aggiungi Elemento")
+                        .font(.headline)
+                        .bold()
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
+                        .cornerRadius(12)
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 20)
+                }
+            
+            
             .disabled(barcode.trimmed.isEmpty)
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $mostraConferma) {
-            ConfermaAggiuntaView(
-                nomeAlimento: barcode,
-                opzioniLista: opzioniLista,
-                onContinuare: {
-                    salvaElemento()
-                    resetForm()
-                },
-                onNo: {
-                    salvaElemento()
-                    dismiss()
-                }
-            )
+            ConfermoAlimento()
         }
+      
     }
-
-
+    
     private func salvaElemento() {
-        // per ora nome e barcode coincidono, il nome vero arriverà dall'API
-        let nuovoAlimento = Alimento(
-            barcode: barcode.trimmed,
-            nome: barcode.trimmed,
-            grammi: 100,
-            scadenza: dataScadenza
-        )
-        modelContext.insert(nuovoAlimento)
+        print("Salvataggio nel DB: \(barcode)")
+        
     }
-
-
+    
     private func resetForm() {
         barcode = ""
-        dataScadenza = Date()
         for i in opzioniLista.indices {
             opzioniLista[i].selezionato = false
         }
     }
 }
 
-
 extension String {
     var trimmed: String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
-
-
 #Preview {
     NavigationStack {
         AggiungiAlimenti()
     }
-    // database finto in memoria, altrimenti insert nell'anteprima va in errore
-    .modelContainer(for: [Lista.self, Alimento.self], inMemory: true)
 }

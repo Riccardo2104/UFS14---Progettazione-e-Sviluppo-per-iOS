@@ -68,8 +68,9 @@ struct HomeView: View {
                 
             }
             .sheet(isPresented: $mostraAggiungi) {
-                AggiungiAlimenti()
-            }
+                NavigationStack {
+                    AggiungiAlimenti()
+                }            }
             
         }
     }
