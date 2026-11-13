@@ -7,23 +7,20 @@
 
 import Foundation
 import SwiftData
+
 @Model
- class Lista { //Evitare eredità altre classi
-    var id = UUID()
+final class Lista {
     var nome: String
     var temperatura: Temperatura
-     @Relationship(deleteRule: .cascade, inverse: \Alimento.lista)
-     var alimenti: [Alimento] = []
-
-     init(
-        ID: UUID = UUID(),
-        nome: String,
-        temperatura: Temperatura,
-        alimenti: [Alimento]
-     ) {
-         self.id = ID
-         self.nome = nome
-         self.temperatura = temperatura
-         self.alimenti = alimenti
-     }
+    // true per Frigorifero, Congelatore, Freezer e Dispensa, false per quelle create dall'utente
+    var predefinita: Bool = false
+    
+    @Relationship(deleteRule: .cascade, inverse: \Alimento.lista)
+    var alimenti: [Alimento] = []
+    
+    init(nome: String, temperatura: Temperatura, predefinita: Bool = false) {
+        self.nome = nome
+        self.temperatura = temperatura
+        self.predefinita = predefinita
+    }
 }

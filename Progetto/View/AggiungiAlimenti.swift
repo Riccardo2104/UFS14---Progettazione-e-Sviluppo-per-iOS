@@ -1,16 +1,17 @@
 import SwiftUI
+import SwiftData
 
 struct AggiungiAlimenti: View {
     @Environment(\.dismiss) private var dismiss
     @State private var barcode: String = ""
     @State private var dataScadenza: Date = Date()
-    @State private var opzioniLista: [ElementoLista] = [
-        ElementoLista(nome: "Lista 1", selezionato: true),
-        ElementoLista(nome: "Lista 2", selezionato: false)
-    ]
+    // le liste vere salvate nel database, e quella scelta dall'utente
+    @Query(sort: \Lista.nome) private var liste: [Lista]
+    @State private var listaScelta: Lista?
     
     @State private var mostraConferma: Bool = false
-    @StateObject private var api = ApiProdotto();
+    @StateObject private var api = ApiProdotto()
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -32,19 +33,20 @@ struct AggiungiAlimenti: View {
             .padding()
             .frame(height: 60)
             .background(Color.purple)
-        
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Nome Alimento:")
+                        Text("Barcode:")
                             .font(.title3)
                             .bold()
-
-                        TextField("Es. Mela", text: $barcode)
+                        
+                        TextField("Es. 8012666041459", text: $barcode)
+                            .keyboardType(.numberPad)
                             .padding(12)
-                            .background(Color .purple)
+                            .background(Color.purple)
                             .cornerRadius(8)
-                            .foregroundColor(.white) //sistemare il fatto che il placeholder text è scuro
+                            .foregroundColor(.white) // sistemare il fatto che il placeholder è scuro
                     }
                     
                     VStack(alignment: .leading, spacing: 12) {
@@ -52,14 +54,17 @@ struct AggiungiAlimenti: View {
                             .font(.title3)
                             .bold()
                         
-                        ForEach($opzioniLista) { $elemento in
+                        // un alimento sta in una lista sola: toccandone una si seleziona quella
+                        ForEach(liste) { lista in
                             Button(action: {
-                                elemento.selezionato.toggle()
+                                listaScelta = lista
                             }) {
                                 HStack(spacing: 12) {
-                                    Image(systemName: elemento.selezionato ? "checkmark.square.fill" : "square")
+                                    Image(systemName: listaScelta == lista ? "checkmark.square.fill" : "square")
                                         .foregroundColor(.purple)
-                                    Text(elemento.nome)
+                                    Image(systemName: lista.temperatura.icona)
+                                        .foregroundColor(.secondary)
+                                    Text(lista.nome)
                                         .foregroundColor(.primary)
                                 }
                             }
@@ -72,52 +77,57 @@ struct AggiungiAlimenti: View {
                             .bold()
                         
                         Spacer()
-        
+                        
                         DatePicker("", selection: $dataScadenza, displayedComponents: .date)
                             .labelsHidden()
                     }
                 }
                 .padding()
             }
-       
-          
-
-                Button(action: {
-                    salvaElemento()
-                    mostraConferma = true
-                }) {
-                    Text("Aggiungi Elemento")
-                        .font(.headline)
-                        .bold()
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(barcode.trimmed.isEmpty ? Color.purple.opacity(0.4) : Color.purple)
-                        .cornerRadius(12)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 20)
-                }
             
-            
-            .disabled(barcode.trimmed.isEmpty)
+            // parte la ricerca e intanto apriamo la pagina di conferma,
+            // che mostra la rotella finché l'API non risponde
+            Button(action: {
+                api.cerca(barcode: barcode.trimmed)
+                mostraConferma = true
+            }) {
+                Text("Cerca prodotto")
+                    .font(.headline)
+                    .bold()
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(barcode.trimmed.isEmpty || listaScelta == nil ? Color.purple.opacity(0.4) : Color.purple)
+                    .cornerRadius(12)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 20)
+            }
+            .disabled(barcode.trimmed.isEmpty || listaScelta == nil)
         }
         .navigationBarBackButtonHidden(true)
-        .navigationDestination(isPresented: $mostraConferma) {
-            ConfermoAlimento()
+        .onAppear {
+            // di default la prima lista, così l'utente non deve sceglierla ogni volta
+            if listaScelta == nil {
+                listaScelta = liste.first
+            }
         }
-      
-    }
-    
-    private func salvaElemento() {
-        print("Salvataggio nel DB: \(barcode)")
-        
+        .navigationDestination(isPresented: $mostraConferma) {
+            ConfermoAlimento(
+                api: api,
+                barcode: barcode.trimmed,
+                scadenza: dataScadenza,
+                lista: listaScelta,
+                onSalvato: {
+                    resetForm()
+                }
+            )
+        }
     }
     
     private func resetForm() {
         barcode = ""
-        for i in opzioniLista.indices {
-            opzioniLista[i].selezionato = false
-        }
+        dataScadenza = Date()
+        // la lista scelta la teniamo: di solito si aggiungono più cose nello stesso posto
     }
 }
 
@@ -126,8 +136,10 @@ extension String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+
 #Preview {
     NavigationStack {
         AggiungiAlimenti()
     }
+    .modelContainer(for: [Lista.self, Alimento.self], inMemory: true)
 }

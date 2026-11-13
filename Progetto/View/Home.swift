@@ -1,50 +1,33 @@
 import SwiftUI
-
-// dati di prova, poi li sostituiamo con i modelli veri
-struct AlimentoFinto: Identifiable {
-    let id = UUID()
-    var nome: String
-    var kcal100g: Double?
-    var immagine: String = "placeholder"
-}
-
-struct ListaFinta: Identifiable {
-    let id = UUID()
-    var nome: String
-    var alimenti: [AlimentoFinto]
-    
-    static let esempi: [ListaFinta] = [
-        ListaFinta(nome: "Frigorifero", alimenti: [
-            AlimentoFinto(nome: "Latte", kcal100g: 64),
-            AlimentoFinto(nome: "Yogurt", kcal100g: 84)
-        ]),
-        ListaFinta(nome: "Congelatore", alimenti: [
-            AlimentoFinto(nome: "Piselli", kcal100g: 81)
-        ]),
-        ListaFinta(nome: "Freezer", alimenti: []),
-        ListaFinta(nome: "Dispensa", alimenti: [
-            AlimentoFinto(nome: "Pasta", kcal100g: 359),
-            AlimentoFinto(nome: "Biscotti")
-        ]),
-        ListaFinta(nome: "Lista Custom", alimenti: [
-            AlimentoFinto(nome: "Alimento", kcal100g: 120)
-        ])
-    ]
-}
+import SwiftData
 
 struct HomeView: View {
-    @State private var liste = ListaFinta.esempi
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Lista.nome) private var liste: [Lista]
+    
     @State private var mostraCreaLista = false
     @State private var mostraAggiungi = false
+    
+    // prima le liste fisse nell'ordine di sempre, poi quelle create dall'utente
+    private var listeOrdinate: [Lista] {
+        let ordine = ["Frigorifero", "Congelatore", "Freezer", "Dispensa"]
+        let fisse = liste
+            .filter { $0.predefinita }
+            .sorted { (ordine.firstIndex(of: $0.nome) ?? 99) < (ordine.firstIndex(of: $1.nome) ?? 99) }
+        let custom = liste.filter { !$0.predefinita }
+        return fisse + custom
+    }
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 2) {
-                        ForEach(liste) { lista in
+                        ForEach(listeOrdinate) { lista in
                             SezioneLista(lista: lista, onElimina: { alimento in
-                                elimina(alimento, da: lista)
+                                modelContext.delete(alimento)
+                                try? modelContext.save()
+
                             })
                         }
                     }
@@ -53,7 +36,6 @@ struct HomeView: View {
                 HStack(spacing: 12) {
                     PulsanteViola(titolo: "Crea lista Custom") {
                         mostraCreaLista = true
-                       
                     }
                     PulsanteViola(titolo: "Aggiungi alimenti") {
                         mostraAggiungi = true
@@ -64,27 +46,19 @@ struct HomeView: View {
             .navigationTitle("FrigoNutrient")
             .sheet(isPresented: $mostraCreaLista) {
                 CreazioneLista()
-                
-                
             }
             .sheet(isPresented: $mostraAggiungi) {
                 NavigationStack {
                     AggiungiAlimenti()
-                }            }
-            
-        }
-    }
-    
-    func elimina(_ alimento: AlimentoFinto, da lista: ListaFinta) {
-        if let i = liste.firstIndex(where: { $0.id == lista.id }) {
-            liste[i].alimenti.removeAll { $0.id == alimento.id }
+                }
+            }
         }
     }
 }
 
 struct SezioneLista: View {
-    let lista: ListaFinta
-    let onElimina: (AlimentoFinto) -> Void
+    let lista: Lista
+    let onElimina: (Alimento) -> Void
     
     @State private var aperta = false
     
@@ -96,6 +70,7 @@ struct SezioneLista: View {
                 aperta.toggle()
             } label: {
                 HStack {
+                    Image(systemName: lista.temperatura.icona)
                     Text(lista.nome)
                     Spacer()
                     Image(systemName: aperta ? "arrow.up" : "arrow.down")
@@ -128,7 +103,7 @@ struct SezioneLista: View {
 }
 
 struct CardAlimento: View {
-    let alimento: AlimentoFinto
+    let alimento: Alimento
     let onElimina: () -> Void
     
     @State private var selezionato = false
@@ -145,10 +120,7 @@ struct CardAlimento: View {
                 Spacer()
             }
             
-            Image(alimento.immagine)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 100)
+            ImmagineProdotto(url: alimento.immagineURL)
             
             Text(alimento.nome)
                 .font(.headline)
@@ -193,5 +165,6 @@ struct PulsanteViola: View {
 }
 
 #Preview {
-    HomeView()
+    ContentView()
+        .modelContainer(for: [Lista.self, Alimento.self], inMemory: true)
 }

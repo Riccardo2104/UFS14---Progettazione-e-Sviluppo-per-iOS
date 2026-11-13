@@ -5,11 +5,12 @@
 //  Created by s15 on 15/10/26.
 //
 import SwiftUI
+import SwiftData
 
 struct PulsanteCerchio: View {
     let icona: String
     @Binding var attivo: Bool
-
+    
     var body: some View {
         Button {
             attivo.toggle()
@@ -31,7 +32,13 @@ struct CreazioneLista: View {
     @State private var nomeLista = ""
     @State private var scelta: Temperatura? = nil
     @Environment(\.dismiss) private var dismiss // variabile di contesto che usiamo per chiudere la pagina all'interno della vista
-
+    @Environment(\.modelContext) private var modelContext
+    
+    // si può salvare solo con un nome e una temperatura
+    private var puoSalvare: Bool {
+        !nomeLista.trimmed.isEmpty && scelta != nil
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -79,16 +86,17 @@ struct CreazioneLista: View {
                     }
                     HStack(alignment: VerticalAlignment.bottom, spacing:100) {
                         Button (action:{
-                            salvaElemento()
+                            salvaLista()
                             dismiss()
-                        }){ //Da implementare
+                        }){
                             Text("Salva")
                                 .foregroundColor(.white)
                                 .font(.headline)
                         }
                         .padding(16)
-                        .background(Color.purple)
+                        .background(puoSalvare ? Color.purple : Color.purple.opacity(0.4))
                         .cornerRadius(10)
+                        .disabled(!puoSalvare)
                     }
                 }
                 .padding()
@@ -97,12 +105,15 @@ struct CreazioneLista: View {
             }
         }
     }
+    
+    private func salvaLista() {
+        guard let temperatura = scelta else { return }
+        let nuova = Lista(nome: nomeLista.trimmed, temperatura: temperatura)
+        modelContext.insert(nuova)
+    }
 }
 
-private func salvaElemento() {
-    print("Salvataggio nel DB: ")
-    
-}
 #Preview {
     CreazioneLista()
+        .modelContainer(for: [Lista.self, Alimento.self], inMemory: true)
 }
