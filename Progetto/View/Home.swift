@@ -203,10 +203,15 @@ struct HomeView: View {
                 }
                 
                 ImmagineProdotto(url: alimento.immagineURL)
+                VStack {
+                    Text(alimento.nome)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Spacer()
+                    Text("Scade il \(alimento.scadenza.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.caption)
+                }
                 
-                Text(alimento.nome)
-                    .font(.headline)
-                    .lineLimit(1)
                 
                 HStack {
                     NavigationLink(destination: ValoriNutrizionali(alimento: alimento)) {

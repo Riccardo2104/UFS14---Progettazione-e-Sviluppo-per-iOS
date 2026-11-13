@@ -51,7 +51,7 @@ struct ValoriNutrizionali: View {
                 
                 Spacer()
                 
-                Text("Nome alimento")
+                Text(alimento.nome)
                     .font(.title2)
                     .bold()
                     .foregroundColor(.black)

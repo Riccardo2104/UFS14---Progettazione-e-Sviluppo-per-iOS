@@ -17,7 +17,7 @@ class Alimento {
     var proteine100g: Double?
     var fibre100g: Double?
     var grammi: Double = 100
-    var scadenza: Date?
+    var scadenza: Date
     var lista: Lista?
 
 
@@ -30,7 +30,7 @@ class Alimento {
         proteine100g: Double? = nil,
         fibre100g: Double? = nil,
         grammi: Double,
-        scadenza: Date? = nil,
+        scadenza: Date,
         lista: Lista? = nil
     ) {
         self.barcode = barcode
