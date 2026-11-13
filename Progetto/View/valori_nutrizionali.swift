@@ -2,18 +2,29 @@
 //  ValoriNutrizionali.swift
 //  Progetto
 //
-
+import Foundation
 import SwiftUI
 
 struct ValoriNutrizionali: View {
-   
+    
     @Environment(\.dismiss) private var dismiss
     
-    @State private var quantita: String = "100"
-    @State private var grassi: String = ""
-    @State private var proteine: String = ""
-    @State private var fibre: String = ""
+    @State private var quantita: Double = 100
+    @State private var grassi: Double = 15
+    @State private var proteine: Double = 15
+    @State private var fibre: Double = 16
+    @State private var grassi100g : Double = 12
+    @State private var proteine100g: Double = 15
+    @State private var fibre100g: Double = 16
     
+    func calcoloValoriNutrizionali(_ valore :Double) -> Double {
+        (valore / 100) * quantita
+    }
+    func calcoloValori () {
+        grassi = calcoloValoriNutrizionali(grassi100g)
+        proteine = calcoloValoriNutrizionali(proteine100g)
+        fibre = calcoloValoriNutrizionali(fibre100g)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -52,7 +63,7 @@ struct ValoriNutrizionali: View {
                                 .font(.title2)
                                 .bold()
                             HStack {
-                                TextField("100", text: $quantita)
+                                TextField("100", value: $quantita , format: .number)
                                     .padding(10)
                                     .frame(width: 180)
                                     .background(Color(uiColor: .systemGray5))
@@ -71,7 +82,7 @@ struct ValoriNutrizionali: View {
                         HStack {
                             Text("Grassi:")
                                 .frame(width: 90, alignment: .leading)
-                            TextField("", text: $grassi)
+                            TextField("", value: $grassi, format: .number)
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
@@ -81,7 +92,7 @@ struct ValoriNutrizionali: View {
                         HStack {
                             Text("Proteine:")
                                 .frame(width: 90, alignment: .leading)
-                            TextField("", text: $proteine)
+                            TextField("", value: $proteine, format: .number)
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
@@ -91,26 +102,30 @@ struct ValoriNutrizionali: View {
                         HStack {
                             Text("Fibre:")
                                 .frame(width: 90, alignment: .leading)
-                            TextField("", text: $fibre)
+                            TextField("", value: $fibre, format: .number)
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray3).opacity(0.2)) // Solo etichetta o campo vuoto
                                 .cornerRadius(4)
                             Text("g").font(.caption)
                         }
+                        Spacer()
+                        Button(action: calcoloValori){
+                            
+                            Text("Calcola").foregroundColor(.white).font(.headline)
+                                .padding()
+                                .background(Color(uiColor: .systemPurple))
+                                .cornerRadius(8)
+                        }
+                        
                     }
-                    
-                    // Data di Scadenza
-                    
-                    
-                    
                 }
-                .padding()
             }
+            .padding()
         }
-       
         .navigationBarBackButtonHidden(true)
     }
 }
+
 
 #Preview {
     NavigationStack {
