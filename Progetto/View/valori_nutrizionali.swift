@@ -9,21 +9,33 @@ struct ValoriNutrizionali: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    let alimento: Alimento
+    
     @State private var quantita: Double = 100
-    @State private var grassi: Double = 15
-    @State private var proteine: Double = 15
-    @State private var fibre: Double = 16
-    @State private var grassi100g : Double = 12
-    @State private var proteine100g: Double = 15
-    @State private var fibre100g: Double = 16
+    @State private var nome: String = ""
+    @State private var kcal: Double
+    @State private var grassi: Double
+    @State private var proteine: Double
+    @State private var fibre: Double 
+    
+    
+    init(alimento: Alimento) {
+        self.alimento = alimento
+        _grassi = State(initialValue: alimento.grassi100g ?? 0)
+        _nome = State(initialValue: alimento.nome)
+        _proteine = State(initialValue: alimento.proteine100g ?? 0)
+        _fibre = State(initialValue: alimento.fibre100g ?? 0)
+        _kcal = State(initialValue: alimento.kcal100g ?? 0)
+    }
     
     func calcoloValoriNutrizionali(_ valore :Double) -> Double {
         (valore / 100) * quantita
     }
     func calcoloValori () {
-        grassi = calcoloValoriNutrizionali(grassi100g)
-        proteine = calcoloValoriNutrizionali(proteine100g)
-        fibre = calcoloValoriNutrizionali(fibre100g)
+        grassi = calcoloValoriNutrizionali(alimento.grassi100g ?? 0)
+        proteine = calcoloValoriNutrizionali(alimento.proteine100g ?? 0)
+        fibre = calcoloValoriNutrizionali(alimento.fibre100g ?? 0)
+        kcal = calcoloValoriNutrizionali(alimento.kcal100g ?? 0)
     }
     
     var body: some View {
@@ -80,12 +92,23 @@ struct ValoriNutrizionali: View {
                     
                     VStack(spacing: 12) {
                         HStack {
+                            Text("Calorie:")
+                                .frame(width: 90, alignment: .leading)
+                            TextField("", value: $kcal, format: .number)
+                                .padding(8)
+                                .background(Color(uiColor: .systemGray5))
+                                .cornerRadius(4)
+                                .disabled(true)
+                            Text("kCal").font(.caption)
+                        }
+                        HStack {
                             Text("Grassi:")
                                 .frame(width: 90, alignment: .leading)
                             TextField("", value: $grassi, format: .number)
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
+                                .disabled(true)
                             Text("g").font(.caption)
                         }
                         
@@ -96,6 +119,7 @@ struct ValoriNutrizionali: View {
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray5))
                                 .cornerRadius(4)
+                                .disabled(true)
                             Text("g").font(.caption)
                         }
                         
@@ -106,6 +130,7 @@ struct ValoriNutrizionali: View {
                                 .padding(8)
                                 .background(Color(uiColor: .systemGray3).opacity(0.2)) // Solo etichetta o campo vuoto
                                 .cornerRadius(4)
+                                .disabled(true)
                             Text("g").font(.caption)
                         }
                         Spacer()
@@ -127,8 +152,4 @@ struct ValoriNutrizionali: View {
 }
 
 
-#Preview {
-    NavigationStack {
-        ValoriNutrizionali()
-    }
-}
+
